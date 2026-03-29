@@ -1,0 +1,397 @@
+\documentclass[12pt]{article}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian,english]{babel}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{makecell}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{xltabular}
+\usepackage[table]{xcolor}
+
+\geometry{
+    a4paper,
+    left=1.5cm,
+    right=1.5cm,
+    top=1.5cm,
+    bottom=2.5cm
+}
+
+\hypersetup{hidelinks}
+
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{0.35\baselineskip}
+\setlength{\emergencystretch}{1.5em}
+\setlength{\tabcolsep}{7pt}
+\renewcommand{\arraystretch}{1.12}
+\setcellgapes{2pt}
+\makegapedcells
+\keepXColumns
+
+\definecolor{commitred}{RGB}{236, 48, 48}
+\definecolor{commitblue}{RGB}{52, 83, 255}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\cmdcell}[1]{\parbox[t]{\linewidth}{\ttfamily\small\raggedright\strut #1\strut}}
+\newcommand{\commitnode}[4]{%
+    \fill[#3] (#1,#2) circle (4.3pt);
+    \node[font=\bfseries\scriptsize] at (#1,#2 + 0.42) {#4};
+}
+
+\begin{document}
+
+\pagenumbering{gobble}
+\input{title.tex}
+\clearpage
+\pagenumbering{arabic}
+\tableofcontents
+\newpage
+
+\section{Задание}
+
+\subsection{Цель работы}
+
+Сконфигурировать в домашнем каталоге пользователя репозитории
+\texttt{svn} и \texttt{git}, загрузить в них начальную ревизию файлов
+с исходными кодами в соответствии с вариантом и воспроизвести
+последовательность операций над исходным кодом по выданной блок-схеме.
+
+При составлении последовательности команд учитываются следующие условия:
+
+\begin{itemize}[leftmargin=1.5em]
+    \item цвет элементов схемы указывает на пользователя,
+    совершившего действие: красный --- первый, синий --- второй;
+    \item цифры над узлами обозначают номера ревизий;
+    \item при слияниях необходимо разрешать возникающие конфликты.
+\end{itemize}
+
+\subsection{Блок-схема варианта}
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[x=0.62cm, y=0.78cm, line width=0.9pt]
+        \draw[commitred] (0,2) -- (2,2) -- (7,2) -- (12.5,2) -- (13.5,2);
+        \draw[commitred] (0,2) -- (0,0.55) -- (1,0.55) -- (8,0.55) -- (9,0.55) -- (11.55,0.55) -- (12.5,0.55) -- (12.5,2);
+        \draw[commitblue] (2,2) -- (2,1.15) -- (3,1.15) -- (4,1.15) -- (5,1.15) -- (6,1.15) -- (10,1.15) -- (11,1.15) -- (11.55,1.15) -- (11.55,0.55);
+
+        \commitnode{0}{2}{commitred}{r0}
+        \commitnode{1}{0.55}{commitred}{r1}
+        \commitnode{2}{2}{commitred}{r2}
+        \commitnode{3}{1.15}{commitblue}{r3}
+        \commitnode{4}{1.15}{commitblue}{r4}
+        \commitnode{5}{1.15}{commitblue}{r5}
+        \commitnode{6}{1.15}{commitblue}{r6}
+        \commitnode{7}{2}{commitred}{r7}
+        \commitnode{8}{0.55}{commitred}{r8}
+        \commitnode{9}{0.55}{commitred}{r9}
+        \commitnode{10}{1.15}{commitblue}{r10}
+        \commitnode{11}{1.15}{commitblue}{r11}
+        \commitnode{11.55}{0.55}{commitred}{r12}
+        \commitnode{12.5}{2}{commitred}{r13}
+        \commitnode{13.5}{2}{commitred}{r14}
+    \end{tikzpicture}
+    \caption{Блок-схема варианта 1400}
+\end{figure}
+
+\section{Ход работы}
+
+Для краткости в таблицах ниже используется обозначение
+\texttt{apply\_snapshot N}. Под ним понимается замена содержимого рабочего
+каталога состоянием из архива \texttt{commitN.zip}.
+Для \texttt{git} после этого выполняется \texttt{git add -A}, для
+\texttt{svn} --- \texttt{svn add --force .} после удаления старого состояния.
+
+\subsection{Создание и конфигурация репозитория Git}
+
+\noindent
+\begin{tabularx}{\textwidth}{|L{0.18\textwidth}|Y|}
+\hline
+\rowcolor{white}
+\textbf{Этап} & \textbf{Команды} \\
+\hline
+Подготовка &
+\cmdcell{cd ~\\
+mkdir git-usage\\
+cd git-usage\\
+git init\\
+git config user.name "red"\\
+git config user.email "red@example.com"\\
+git config merge.conflictstyle diff3} \\
+\hline
+\end{tabularx}
+
+\subsection{Последовательность ревизий Git}
+
+\begin{xltabular}{\textwidth}{|L{0.10\textwidth}|>{\hsize=1.45\hsize\raggedright\arraybackslash}X|>{\hsize=0.75\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{white}
+\textbf{Коммит} & \textbf{Команды} & \textbf{Комментарий} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{white}
+\textbf{Коммит} & \textbf{Команды} & \textbf{Комментарий} \\
+\hline
+\endhead
+r0 &
+\cmdcell{apply\_snapshot 0\\
+git commit -m "r0"} &
+Начальная ревизия. \\
+\hline
+r1 &
+\cmdcell{git checkout -b red-bottom\\
+apply\_snapshot 1\\
+git commit -m "r1"} &
+Создание нижней красной ветки. \\
+\hline
+r2 &
+\cmdcell{git checkout main\\
+apply\_snapshot 2\\
+git commit -m "r2"} &
+Продолжение верхней красной ветки. \\
+\hline
+r3 &
+\cmdcell{git config user.name "blue"\\
+git config user.email "blue@example.com"\\
+git checkout -b blue\\
+apply\_snapshot 3\\
+git commit -m "r3"} &
+Начало синей ветки от \texttt{r2}. \\
+\hline
+r4 &
+\cmdcell{apply\_snapshot 4\\
+git commit -m "r4"} &
+Следующая ревизия синей ветки. \\
+\hline
+r5 &
+\cmdcell{apply\_snapshot 5\\
+git commit -m "r5"} &
+Продолжение синей ветки. \\
+\hline
+r6 &
+\cmdcell{apply\_snapshot 6\\
+git commit -m "r6"} &
+Продолжение синей ветки. \\
+\hline
+r7 &
+\cmdcell{git config user.name "red"\\
+git config user.email "red@example.com"\\
+git checkout main\\
+apply\_snapshot 7\\
+git commit -m "r7"} &
+Возврат в верхнюю красную ветку. \\
+\hline
+r8 &
+\cmdcell{git checkout red-bottom\\
+apply\_snapshot 8\\
+git commit -m "r8"} &
+Продолжение нижней красной ветки. \\
+\hline
+r9 &
+\cmdcell{apply\_snapshot 9\\
+git commit -m "r9"} &
+Продолжение нижней красной ветки. \\
+\hline
+r10 &
+\cmdcell{git config user.name "blue"\\
+git config user.email "blue@example.com"\\
+git checkout blue\\
+apply\_snapshot 10\\
+git commit -m "r10"} &
+Возврат в синюю ветку. \\
+\hline
+r11 &
+\cmdcell{apply\_snapshot 11\\
+git commit -m "r11"} &
+Подготовка к первому слиянию. \\
+\hline
+r12 &
+\cmdcell{git config user.name "red"\\
+git config user.email "red@example.com"\\
+git checkout red-bottom\\
+git merge --no-ff --no-commit blue\\
+apply\_snapshot 12\\
+git commit -m "r12"} &
+Слияние \texttt{blue -> red-bottom}, конфликтующие файлы приводятся к состоянию \texttt{commit12.zip}. \\
+\hline
+r13 &
+\cmdcell{git checkout main\\
+git merge --no-ff --no-commit red-bottom\\
+apply\_snapshot 13\\
+git commit -m "r13"} &
+Слияние \texttt{red-bottom -> main}, конфликтующие файлы приводятся к состоянию \texttt{commit13.zip}. \\
+\hline
+r14 &
+\cmdcell{apply\_snapshot 14\\
+git commit -m "r14"} &
+Финальная ревизия. \\
+\hline
+\end{xltabular}
+
+\subsection{Создание и конфигурация репозитория SVN}
+
+\noindent
+\begin{tabularx}{\textwidth}{|L{0.18\textwidth}|Y|}
+\hline
+\rowcolor{white}
+\textbf{Этап} & \textbf{Команды} \\
+\hline
+Подготовка &
+\cmdcell{cd ~\\
+mkdir svn-usage\\
+cd svn-usage\\
+svnadmin create repo\\
+REPO\_URL="file://\$HOME/svn-usage/repo"\\
+svn mkdir "\$REPO\_URL/trunk" "\$REPO\_URL/branches"\\
+-m "Init repository layout"\\
+svn checkout "\$REPO\_URL/trunk" workDir\\
+cd workDir} \\
+\hline
+\end{tabularx}
+
+\subsection{Последовательность ревизий SVN}
+
+Команды \texttt{svn mkdir} и \texttt{svn copy} создают служебные ревизии
+Subversion, поэтому их внутренние номера не совпадают с номерами узлов
+на блок-схеме. В таблице приведены действия, соответствующие именно
+ревизиям варианта.
+
+\begin{xltabular}{\textwidth}{|L{0.10\textwidth}|>{\hsize=1.45\hsize\raggedright\arraybackslash}X|>{\hsize=0.75\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{white}
+\textbf{Коммит} & \textbf{Команды} & \textbf{Комментарий} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{white}
+\textbf{Коммит} & \textbf{Команды} & \textbf{Комментарий} \\
+\hline
+\endhead
+r0 &
+\cmdcell{apply\_snapshot 0\\
+svn commit -m "r0" --username red} &
+Начальная ревизия в \texttt{trunk}. \\
+\hline
+r1 &
+\cmdcell{svn copy "\$REPO\_URL/trunk"\\
+"\$REPO\_URL/branches/red-bottom"\\
+-m "Create red-bottom branch" --username red\\
+svn switch "\$REPO\_URL/branches/red-bottom"\\
+apply\_snapshot 1\\
+svn commit -m "r1" --username red} &
+Создание нижней красной ветки. \\
+\hline
+r2 &
+\cmdcell{svn switch "\$REPO\_URL/trunk"\\
+apply\_snapshot 2\\
+svn commit -m "r2" --username red} &
+Продолжение верхней красной ветки. \\
+\hline
+r3 &
+\cmdcell{svn copy "\$REPO\_URL/trunk"\\
+"\$REPO\_URL/branches/blue"\\
+-m "Create blue branch" --username red\\
+svn switch "\$REPO\_URL/branches/blue"\\
+apply\_snapshot 3\\
+svn commit -m "r3" --username blue} &
+Начало синей ветки от \texttt{r2}. \\
+\hline
+r4 &
+\cmdcell{apply\_snapshot 4\\
+svn commit -m "r4" --username blue} &
+Следующая ревизия синей ветки. \\
+\hline
+r5 &
+\cmdcell{apply\_snapshot 5\\
+svn commit -m "r5" --username blue} &
+Продолжение синей ветки. \\
+\hline
+r6 &
+\cmdcell{apply\_snapshot 6\\
+svn commit -m "r6" --username blue} &
+Продолжение синей ветки. \\
+\hline
+r7 &
+\cmdcell{svn switch "\$REPO\_URL/trunk"\\
+apply\_snapshot 7\\
+svn commit -m "r7" --username red} &
+Возврат в верхнюю красную ветку. \\
+\hline
+r8 &
+\cmdcell{svn switch "\$REPO\_URL/branches/red-bottom"\\
+apply\_snapshot 8\\
+svn commit -m "r8" --username red} &
+Продолжение нижней красной ветки. \\
+\hline
+r9 &
+\cmdcell{apply\_snapshot 9\\
+svn commit -m "r9" --username red} &
+Продолжение нижней красной ветки. \\
+\hline
+r10 &
+\cmdcell{svn switch "\$REPO\_URL/branches/blue"\\
+apply\_snapshot 10\\
+svn commit -m "r10" --username blue} &
+Возврат в синюю ветку. \\
+\hline
+r11 &
+\cmdcell{apply\_snapshot 11\\
+svn commit -m "r11" --username blue} &
+Подготовка к первому слиянию. \\
+\hline
+r12 &
+\cmdcell{svn switch "\$REPO\_URL/branches/red-bottom"\\
+svn merge "\$REPO\_URL/branches/blue" --accept postpone\\
+svn resolve --accept working -R .\\
+apply\_snapshot 12\\
+svn commit -m "r12" --username red} &
+Слияние \texttt{blue -> red-bottom}, конфликтующие файлы приводятся к состоянию \texttt{commit12.zip}. \\
+\hline
+r13 &
+\cmdcell{svn switch "\$REPO\_URL/trunk"\\
+svn merge "\$REPO\_URL/branches/red-bottom" --accept postpone\\
+svn resolve --accept working -R .\\
+apply\_snapshot 13\\
+svn commit -m "r13" --username red} &
+Слияние \texttt{red-bottom -> trunk}, конфликтующие файлы приводятся к состоянию \texttt{commit13.zip}. \\
+\hline
+r14 &
+\cmdcell{apply\_snapshot 14\\
+svn commit -m "r14" --username red} &
+Финальная ревизия. \\
+\hline
+\end{xltabular}
+
+\subsection{Разрешение конфликтов}
+
+Конфликты возникали в точках слияния \texttt{r12} и \texttt{r13}, когда в
+объединяемых ветках были изменены одни и те же файлы. В обоих случаях
+разрешение выполнялось одинаково:
+
+\begin{itemize}[leftmargin=1.5em]
+    \item запускалось слияние нужной ветки;
+    \item рабочее дерево приводилось к целевому состоянию из архивов
+    \texttt{commit12.zip} и \texttt{commit13.zip};
+    \item результат помечался как разрешённый и фиксировался коммитом:
+    \texttt{git add -A} для Git и
+    \texttt{svn resolve --accept working -R .} для SVN.
+\end{itemize}
+
+Такой подход гарантирует, что после merge содержимое файлов точно совпадает
+с состоянием, заданным вариантом.
+
+\section{Выводы}
+
+В ходе работы были воспроизведены одинаковые состояния проекта в
+\texttt{git} и \texttt{svn} в соответствии с вариантом 1400. Были
+отработаны создание и конфигурация репозиториев, работа с ветками,
+переключение пользователей и разрешение конфликтов при слиянии.
+Практика показала различия между распределённой и централизованной
+моделями контроля версий и закрепила базовые команды обеих систем.
+
+\end{document}
