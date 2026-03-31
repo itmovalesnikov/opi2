@@ -105,6 +105,10 @@
 каталога состоянием из архива \texttt{commitN.zip}.
 Для \texttt{git} после этого выполняется \texttt{git add -A}, для
 \texttt{svn} --- \texttt{svn add --force .} после удаления старого состояния.
+Также используются сокращения \texttt{load\_red\_identity} и
+\texttt{load\_blue\_identity}: они настраивают автора коммита
+(\texttt{user.name} и \texttt{user.email}) как \texttt{red} и
+\texttt{blue} соответственно.
 
 \subsection{Создание и конфигурация репозитория Git}
 
@@ -156,8 +160,7 @@ git commit -m "r2"} &
 Продолжение верхней красной ветки. \\
 \hline
 r3 &
-\cmdcell{git config user.name "blue"\\
-git config user.email "blue@example.com"\\
+\cmdcell{load\_blue\_identity\\
 git checkout -b blue\\
 apply\_snapshot 3\\
 git commit -m "r3"} &
@@ -179,8 +182,7 @@ git commit -m "r6"} &
 Продолжение синей ветки. \\
 \hline
 r7 &
-\cmdcell{git config user.name "red"\\
-git config user.email "red@example.com"\\
+\cmdcell{load\_red\_identity\\
 git checkout main\\
 apply\_snapshot 7\\
 git commit -m "r7"} &
@@ -198,8 +200,7 @@ git commit -m "r9"} &
 Продолжение нижней красной ветки. \\
 \hline
 r10 &
-\cmdcell{git config user.name "blue"\\
-git config user.email "blue@example.com"\\
+\cmdcell{load\_blue\_identity\\
 git checkout blue\\
 apply\_snapshot 10\\
 git commit -m "r10"} &
@@ -211,8 +212,7 @@ git commit -m "r11"} &
 Подготовка к первому слиянию. \\
 \hline
 r12 &
-\cmdcell{git config user.name "red"\\
-git config user.email "red@example.com"\\
+\cmdcell{load\_red\_identity\\
 git checkout red-bottom\\
 git merge --no-ff --no-commit blue\\
 apply\_snapshot 12\\
