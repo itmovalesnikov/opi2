@@ -12,6 +12,7 @@ mkdir -p "$OUT_DIR"
 git init -b main "$GIT_REPO_DIR" >/dev/null
 cd "$GIT_REPO_DIR"
 git config merge.conflictstyle diff3
+git config commit.gpgsign false
 
 load_red_identity
 git_apply_snapshot 0
