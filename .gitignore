@@ -7,3 +7,4 @@ build/
 main.fls
 main.fdb_latexmk
 main.pdf
+lab/out/
