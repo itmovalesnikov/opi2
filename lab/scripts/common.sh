@@ -97,7 +97,3 @@ svn_apply_snapshot() {
     rm -rf "$temp_snapshot"
     svn add --force . >/dev/null
 }
-
-svn_resolve_working_copy() {
-    svn resolve --accept working -R . >/dev/null 2>&1 || true
-}

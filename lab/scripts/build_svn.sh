@@ -67,20 +67,20 @@ svn commit -m "r11" --username "$LAB_SVN_USER" >/dev/null
 
 svn switch "$REPO_URL/branches/red-bottom" >/dev/null
 red
-# Конфликты оставляем в рабочей копии, затем приводим файлы к нужному снимку.
+
 svn merge "$REPO_URL/branches/blue" --accept postpone >/dev/null 2>&1 || true
-svn_resolve_working_copy
+svn resolve --accept working -R . >/dev/null 2>&1 || true
 svn_apply_snapshot 12
-svn_resolve_working_copy
+svn resolve --accept working -R . >/dev/null 2>&1 || true
 svn commit -m "r12" --username "$LAB_SVN_USER" >/dev/null
 
 svn switch "$REPO_URL/trunk" >/dev/null
 red
-# Повторяем ту же схему для слияния ветки red-bottom в trunk.
+
 svn merge "$REPO_URL/branches/red-bottom" --accept postpone >/dev/null 2>&1 || true
-svn_resolve_working_copy
+svn resolve --accept working -R . >/dev/null 2>&1 || true
 svn_apply_snapshot 13
-svn_resolve_working_copy
+svn resolve --accept working -R . >/dev/null 2>&1 || true
 svn commit -m "r13" --username "$LAB_SVN_USER" >/dev/null
 
 svn_apply_snapshot 14
