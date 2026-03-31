@@ -122,7 +122,7 @@
 \cmdcell{cd ~\\
 mkdir git-usage\\
 cd git-usage\\
-git init\\
+git init -b master\\
 git config user.name "red"\\
 git config user.email "red@example.com"\\
 git config merge.conflictstyle diff3} \\
@@ -154,7 +154,7 @@ git commit -m "r1"} &
 Создание нижней красной ветки. \\
 \hline
 r2 &
-\cmdcell{git checkout main\\
+\cmdcell{git checkout master\\
 apply\_snapshot 2\\
 git commit -m "r2"} &
 Продолжение верхней красной ветки. \\
@@ -183,7 +183,7 @@ git commit -m "r6"} &
 \hline
 r7 &
 \cmdcell{load\_red\_identity\\
-git checkout main\\
+git checkout master\\
 apply\_snapshot 7\\
 git commit -m "r7"} &
 Возврат в верхнюю красную ветку. \\
@@ -220,11 +220,11 @@ git commit -m "r12"} &
 Слияние \texttt{blue -> red-bottom}, конфликтующие файлы приводятся к состоянию \texttt{commit12.zip}. \\
 \hline
 r13 &
-\cmdcell{git checkout main\\
+\cmdcell{git checkout master\\
 git merge --no-ff --no-commit red-bottom\\
 apply\_snapshot 13\\
 git commit -m "r13"} &
-Слияние \texttt{red-bottom -> main}, конфликтующие файлы приводятся к состоянию \texttt{commit13.zip}. \\
+Слияние \texttt{red-bottom -> master}, конфликтующие файлы приводятся к состоянию \texttt{commit13.zip}. \\
 \hline
 r14 &
 \cmdcell{apply\_snapshot 14\\

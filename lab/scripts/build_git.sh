@@ -9,7 +9,7 @@ GIT_REPO_DIR="$OUT_DIR/git-repo"
 rm -rf "$GIT_REPO_DIR"
 mkdir -p "$OUT_DIR"
 
-git init -b main "$GIT_REPO_DIR" >/dev/null
+git init -b master "$GIT_REPO_DIR" >/dev/null
 cd "$GIT_REPO_DIR"
 git config merge.conflictstyle diff3
 git config commit.gpgsign false
@@ -23,7 +23,7 @@ load_red_identity
 git_apply_snapshot 1
 git commit -m "r1" >/dev/null
 
-git checkout main >/dev/null
+git checkout master >/dev/null
 load_red_identity
 git_apply_snapshot 2
 git commit -m "r2" >/dev/null
@@ -39,7 +39,7 @@ git commit -m "r5" >/dev/null
 git_apply_snapshot 6
 git commit -m "r6" >/dev/null
 
-git checkout main >/dev/null
+git checkout master >/dev/null
 load_red_identity
 git_apply_snapshot 7
 git commit -m "r7" >/dev/null
@@ -64,7 +64,7 @@ git merge --no-ff --no-commit blue >/dev/null 2>&1 || true
 git_apply_snapshot 12
 git commit -m "r12" >/dev/null
 
-git checkout main >/dev/null
+git checkout master >/dev/null
 load_red_identity
 git merge --no-ff --no-commit red-bottom >/dev/null 2>&1 || true
 git_apply_snapshot 13
