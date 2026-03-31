@@ -27,6 +27,16 @@ set_git_user() {
     git config user.email "$LAB_USER_EMAIL"
 }
 
+load_red_identity() {
+    red
+    set_git_user
+}
+
+load_blue_identity() {
+    blue
+    set_git_user
+}
+
 clear_plain_dir() {
     local target="$1"
 
@@ -36,27 +46,38 @@ clear_plain_dir() {
         -exec rm -rf -- {} +
 }
 
-apply_snapshot_to_dir() {
+extract_snapshot() {
+    local revision="$1"
+    local destination="$2"
+    unzip -qq -o "$INPUT_DIR/commit${revision}.zip" -d "$destination"
+}
+
+replace_dir_with_snapshot() {
     local revision="$1"
     local target="$2"
-    local tmp_dir
+    local temp_snapshot
 
-    tmp_dir="$(mktemp -d)"
-    unzip -qq -o "$INPUT_DIR/commit${revision}.zip" -d "$tmp_dir"
+    temp_snapshot="$(mktemp -d)"
+    extract_snapshot "$revision" "$temp_snapshot"
     clear_plain_dir "$target"
-    cp -a "$tmp_dir"/. "$target"/
-    rm -rf "$tmp_dir"
+    cp -a "$temp_snapshot"/. "$target"/
+    rm -rf "$temp_snapshot"
 }
 
 git_apply_snapshot() {
     local revision="$1"
 
-    apply_snapshot_to_dir "$revision" "$PWD"
+    replace_dir_with_snapshot "$revision" "$PWD"
     git add -A
 }
 
-clear_svn_wc() {
-    find . -mindepth 1 -maxdepth 1 ! -name '.svn' -print0 | while IFS= read -r -d '' entry; do
+clean_svn_working_copy() {
+    local entry
+
+    for entry in ./* ./.[!.]*; do
+        [[ ! -e "$entry" ]] && continue
+        [[ "$entry" == "./.svn" ]] && continue
+
         if svn info "$entry" >/dev/null 2>&1; then
             svn rm --quiet --force "$entry" >/dev/null
         else
@@ -67,13 +88,13 @@ clear_svn_wc() {
 
 svn_apply_snapshot() {
     local revision="$1"
-    local tmp_dir
+    local temp_snapshot
 
-    tmp_dir="$(mktemp -d)"
-    unzip -qq -o "$INPUT_DIR/commit${revision}.zip" -d "$tmp_dir"
-    clear_svn_wc
-    cp -a "$tmp_dir"/. .
-    rm -rf "$tmp_dir"
+    temp_snapshot="$(mktemp -d)"
+    extract_snapshot "$revision" "$temp_snapshot"
+    clean_svn_working_copy
+    cp -a "$temp_snapshot"/. .
+    rm -rf "$temp_snapshot"
     svn add --force . >/dev/null
 }
 

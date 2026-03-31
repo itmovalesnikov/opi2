@@ -349,6 +349,7 @@ r12 &
 svn merge "\$REPO\_URL/branches/blue" --accept postpone\\
 svn resolve --accept working -R .\\
 apply\_snapshot 12\\
+svn resolve --accept working -R .\\
 svn commit -m "r12" --username red} &
 Слияние \texttt{blue -> red-bottom}, конфликтующие файлы приводятся к состоянию \texttt{commit12.zip}. \\
 \hline
@@ -357,6 +358,7 @@ r13 &
 svn merge "\$REPO\_URL/branches/red-bottom" --accept postpone\\
 svn resolve --accept working -R .\\
 apply\_snapshot 13\\
+svn resolve --accept working -R .\\
 svn commit -m "r13" --username red} &
 Слияние \texttt{red-bottom -> trunk}, конфликтующие файлы приводятся к состоянию \texttt{commit13.zip}. \\
 \hline

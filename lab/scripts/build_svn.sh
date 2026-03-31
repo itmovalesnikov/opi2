@@ -2,8 +2,7 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/common.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 SVN_ROOT_DIR="$OUT_DIR/svn"
 SVN_REPO_DIR="$SVN_ROOT_DIR/repo"
@@ -68,6 +67,7 @@ svn commit -m "r11" --username "$LAB_SVN_USER" >/dev/null
 
 svn switch "$REPO_URL/branches/red-bottom" >/dev/null
 red
+# Конфликты оставляем в рабочей копии, затем приводим файлы к нужному снимку.
 svn merge "$REPO_URL/branches/blue" --accept postpone >/dev/null 2>&1 || true
 svn_resolve_working_copy
 svn_apply_snapshot 12
@@ -76,6 +76,7 @@ svn commit -m "r12" --username "$LAB_SVN_USER" >/dev/null
 
 svn switch "$REPO_URL/trunk" >/dev/null
 red
+# Повторяем ту же схему для слияния ветки red-bottom в trunk.
 svn merge "$REPO_URL/branches/red-bottom" --accept postpone >/dev/null 2>&1 || true
 svn_resolve_working_copy
 svn_apply_snapshot 13
