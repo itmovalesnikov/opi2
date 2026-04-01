@@ -3,6 +3,7 @@
 set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
+ensure_git_environment
 
 GIT_REPO_DIR="$OUT_DIR/git-repo"
 
@@ -60,13 +61,17 @@ git commit -m "r11" >/dev/null
 
 git checkout red-bottom >/dev/null
 load_red_identity
-git merge --no-ff --no-commit blue >/dev/null 2>&1 || true
+if ! git merge --no-ff --no-commit blue >/dev/null 2>&1; then
+    :
+fi
 git_apply_snapshot 12
 git commit -m "r12" >/dev/null
 
 git checkout master >/dev/null
 load_red_identity
-git merge --no-ff --no-commit red-bottom >/dev/null 2>&1 || true
+if ! git merge --no-ff --no-commit red-bottom >/dev/null 2>&1; then
+    :
+fi
 git_apply_snapshot 13
 git commit -m "r13" >/dev/null
 

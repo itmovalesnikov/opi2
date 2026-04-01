@@ -3,6 +3,7 @@
 set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
+ensure_svn_environment
 
 SVN_ROOT_DIR="$OUT_DIR/svn"
 SVN_REPO_DIR="$SVN_ROOT_DIR/repo"
@@ -68,19 +69,31 @@ svn commit -m "r11" --username "$LAB_SVN_USER" >/dev/null
 svn switch "$REPO_URL/branches/red-bottom" >/dev/null
 red
 
-svn merge "$REPO_URL/branches/blue" --accept postpone >/dev/null 2>&1 || true
-svn resolve --accept working -R . >/dev/null 2>&1 || true
+if ! svn merge "$REPO_URL/branches/blue" --accept postpone >/dev/null 2>&1; then
+    :
+fi
+if ! svn resolve --accept working -R . >/dev/null 2>&1; then
+    :
+fi
 svn_apply_snapshot 12
-svn resolve --accept working -R . >/dev/null 2>&1 || true
+if ! svn resolve --accept working -R . >/dev/null 2>&1; then
+    :
+fi
 svn commit -m "r12" --username "$LAB_SVN_USER" >/dev/null
 
 svn switch "$REPO_URL/trunk" >/dev/null
 red
 
-svn merge "$REPO_URL/branches/red-bottom" --accept postpone >/dev/null 2>&1 || true
-svn resolve --accept working -R . >/dev/null 2>&1 || true
+if ! svn merge "$REPO_URL/branches/red-bottom" --accept postpone >/dev/null 2>&1; then
+    :
+fi
+if ! svn resolve --accept working -R . >/dev/null 2>&1; then
+    :
+fi
 svn_apply_snapshot 13
-svn resolve --accept working -R . >/dev/null 2>&1 || true
+if ! svn resolve --accept working -R . >/dev/null 2>&1; then
+    :
+fi
 svn commit -m "r13" --username "$LAB_SVN_USER" >/dev/null
 
 svn_apply_snapshot 14
