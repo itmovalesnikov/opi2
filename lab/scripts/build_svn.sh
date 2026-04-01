@@ -3,7 +3,6 @@
 set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
-ensure_svn_environment
 
 SVN_ROOT_DIR="$OUT_DIR/svn"
 SVN_REPO_DIR="$SVN_ROOT_DIR/repo"
