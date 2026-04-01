@@ -23,28 +23,16 @@ blue() {
     LAB_SVN_USER="blue"
 }
 
-set_git_user() {
+load_red_identity() {
+    red
     git config user.name "$LAB_USER_NAME"
     git config user.email "$LAB_USER_EMAIL"
 }
 
-load_red_identity() {
-    red
-    set_git_user
-}
-
 load_blue_identity() {
     blue
-    set_git_user
-}
-
-clear_plain_dir() {
-    local target="$1"
-
-    find "$target" -mindepth 1 -maxdepth 1 \
-        ! -name '.git' \
-        ! -name '.svn' \
-        -exec rm -rf -- {} +
+    git config user.name "$LAB_USER_NAME"
+    git config user.email "$LAB_USER_EMAIL"
 }
 
 extract_snapshot() {
@@ -53,28 +41,28 @@ extract_snapshot() {
     unzip -qq "$INPUT_DIR/commit${revision}.zip" -d "$destination"
 }
 
-replace_dir_with_snapshot() {
+git_apply_snapshot() {
     local revision="$1"
-    local target="$2"
     local temp_snapshot
 
     temp_snapshot="$(mktemp -d)"
     extract_snapshot "$revision" "$temp_snapshot"
-    clear_plain_dir "$target"
-    cp -a "$temp_snapshot"/. "$target"/
+    find "$PWD" -mindepth 1 -maxdepth 1 \
+        ! -name '.git' \
+        ! -name '.svn' \
+        -exec rm -rf -- {} +
+    cp -a "$temp_snapshot"/. "$PWD"/
     rm -rf "$temp_snapshot"
-}
-
-git_apply_snapshot() {
-    local revision="$1"
-
-    replace_dir_with_snapshot "$revision" "$PWD"
     git add -A
 }
 
-clean_svn_working_copy() {
+svn_apply_snapshot() {
+    local revision="$1"
+    local temp_snapshot
     local entry
 
+    temp_snapshot="$(mktemp -d)"
+    extract_snapshot "$revision" "$temp_snapshot"
     for entry in ./* ./.[!.]*; do
         [[ ! -e "$entry" ]] && continue
         [[ "$entry" == "./.svn" ]] && continue
@@ -85,15 +73,6 @@ clean_svn_working_copy() {
             rm -rf -- "$entry"
         fi
     done
-}
-
-svn_apply_snapshot() {
-    local revision="$1"
-    local temp_snapshot
-
-    temp_snapshot="$(mktemp -d)"
-    extract_snapshot "$revision" "$temp_snapshot"
-    clean_svn_working_copy
     cp -a "$temp_snapshot"/. .
     rm -rf "$temp_snapshot"
     svn add --force . >/dev/null
