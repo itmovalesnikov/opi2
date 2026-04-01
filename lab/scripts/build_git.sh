@@ -3,7 +3,6 @@
 set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
-ensure_git_environment
 
 GIT_REPO_DIR="$OUT_DIR/git-repo"
 
