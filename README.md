@@ -40,7 +40,7 @@
 - `lab/out/git-repo` - локальный Git-репозиторий;
 - `lab/out/git-graph.txt` - граф коммитов Git;
 - `lab/out/svn/repo` и `lab/out/svn/wc` - SVN-репозиторий и рабочая копия;
-- `lab/out/svn/log.txt` - лог SVN.
+- `lab/out/svn/log.txt` - полный лог SVN (все ревизии репозитория и отдельные секции по `trunk`, `branches/red-bottom`, `branches/blue`).
 
 ## Запуск в Windows
 

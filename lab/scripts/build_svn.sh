@@ -98,4 +98,7 @@ svn commit -m "r13" --username "$LAB_SVN_USER" >/dev/null
 svn_apply_snapshot 14
 svn commit -m "r14" --username "$LAB_SVN_USER" >/dev/null
 
-svn log "$REPO_URL" -q > "$SVN_ROOT_DIR/log.txt"
+{
+    echo "=== Repository: all revisions ==="
+    svn log "$REPO_URL" -r HEAD:0 -v
+} > "$SVN_ROOT_DIR/log.txt"
