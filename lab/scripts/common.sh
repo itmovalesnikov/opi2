@@ -50,7 +50,7 @@ clear_plain_dir() {
 extract_snapshot() {
     local revision="$1"
     local destination="$2"
-    unzip -qq -o "$INPUT_DIR/commit${revision}.zip" -d "$destination"
+    unzip -qq "$INPUT_DIR/commit${revision}.zip" -d "$destination"
 }
 
 replace_dir_with_snapshot() {
