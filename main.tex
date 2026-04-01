@@ -110,6 +110,20 @@
 (\texttt{user.name} и \texttt{user.email}) как \texttt{red} и
 \texttt{blue} соответственно.
 
+\subsection{Автоматизированный запуск}
+
+Воспроизведение истории выполняется скриптами из каталога
+\texttt{lab/scripts}. Из корня проекта запускаются:
+
+\begin{itemize}[leftmargin=1.5em]
+    \item \texttt{./lab/scripts/build\_git.sh};
+    \item \texttt{./lab/scripts/build\_svn.sh}.
+\end{itemize}
+
+Скрипты создают артефакты в \texttt{lab/out}, проверяют наличие входных
+архивов \texttt{commit0.zip ... commit14.zip} и обязательных утилит
+(\texttt{git}, \texttt{svn}, \texttt{svnadmin}, \texttt{unzip}).
+
 \subsection{Создание и конфигурация репозитория Git}
 
 \noindent
@@ -119,13 +133,14 @@
 \textbf{Этап} & \textbf{Команды} \\
 \hline
 Подготовка &
-\cmdcell{cd ~\\
-mkdir git-usage\\
-cd git-usage\\
-git init -b master\\
-git config user.name "red"\\
-git config user.email "red@example.com"\\
-git config merge.conflictstyle diff3} \\
+\cmdcell{OUT\_DIR="./lab/out"\\
+GIT\_REPO\_DIR="\$OUT\_DIR/git-repo"\\
+rm -rf "\$GIT\_REPO\_DIR"\\
+git init -b master "\$GIT\_REPO\_DIR"\\
+cd "\$GIT\_REPO\_DIR"\\
+git config merge.conflictstyle diff3\\
+git config commit.gpgsign false\\
+load\_red\_identity} \\
 \hline
 \end{tabularx}
 
@@ -160,8 +175,8 @@ git commit -m "r2"} &
 Продолжение верхней красной ветки. \\
 \hline
 r3 &
-\cmdcell{load\_blue\_identity\\
-git checkout -b blue\\
+\cmdcell{git checkout -b blue\\
+load\_blue\_identity\\
 apply\_snapshot 3\\
 git commit -m "r3"} &
 Начало синей ветки от \texttt{r2}. \\
@@ -242,15 +257,17 @@ git commit -m "r14"} &
 \textbf{Этап} & \textbf{Команды} \\
 \hline
 Подготовка &
-\cmdcell{cd ~\\
-mkdir svn-usage\\
-cd svn-usage\\
-svnadmin create repo\\
-REPO\_URL="file://\$HOME/svn-usage/repo"\\
+\cmdcell{OUT\_DIR="./lab/out"\\
+SVN\_ROOT\_DIR="\$OUT\_DIR/svn"\\
+SVN\_REPO\_DIR="\$SVN\_ROOT\_DIR/repo"\\
+SVN\_WC\_DIR="\$SVN\_ROOT\_DIR/wc"\\
+rm -rf "\$SVN\_ROOT\_DIR"\\
+svnadmin create "\$SVN\_REPO\_DIR"\\
+REPO\_URL="file://\$SVN\_REPO\_DIR"\\
 svn mkdir "\$REPO\_URL/trunk" "\$REPO\_URL/branches"\\
 -m "Init repository layout"\\
-svn checkout "\$REPO\_URL/trunk" workDir\\
-cd workDir} \\
+svn checkout "\$REPO\_URL/trunk" "\$SVN\_WC\_DIR"\\
+cd "\$SVN\_WC\_DIR"} \\
 \hline
 \end{tabularx}
 
